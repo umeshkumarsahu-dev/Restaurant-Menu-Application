@@ -1,0 +1,76 @@
+.navbar {
+  background-color: #333;
+}
+
+.nav-link {
+  background-color: #fff !important;
+  color: black;
+  transition: color 0.2s ease;
+  border: 2px solid black;
+}
+
+.card.hover-effect {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.hover-effect:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hidden {
+  display: none;
+}
+
+.embed-responsive-16by9 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 34%;
+  /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.embed-responsive-16by9 .embed-responsive-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 450px;
+}
+
+.nav-link:hover {
+  background-color: orange !important;
+  color: #fff !important; 
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border: 2px solid black;
+}
+
+/* Desktop view (1280x720 resolution) */
+@media only screen and (min-width: 1280px) and (min-height: 720px) {
+  .menu-item {
+    flex: 0 0 calc(33.3333%); 
+    max-width: calc(33.3333%);
+  }
+}
+
+/* Medium view (768x1024 resolution) */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .menu-item {
+    flex: 0 0 calc(50% ); /* Adjusting for margins or paddings */
+    max-width: calc(50% ); /* Adjusting for margins or paddings */
+  }
+
+}
+
+/* Mobile view (375x667 resolution) */
+@media only screen and (max-width: 375px) and (max-height: 667px) {
+  .menu-item {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
