@@ -14,70 +14,78 @@ const menu = [
     { id: 13, title: "Green Tea", category: "beverages", price: "$3", description: "Traditional green tea with antioxidants", img: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Z3JlZW4lMjB0ZWF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" },
   ];
   
-let itemsContainerElement = document.querySelector('.menu-items');
-let innerHTML = '';
-menu.forEach(item => {
-  innerHTML+= `<div class="col-lg-4 my-5 menu-item" data-category="${item.category}">
-    <div class="card hover-effect">
-      <img src="${item.img}"  width="250px" height="250px" class="card-img-top" alt="${item.title}">
-      <div class="card-body" >
-        <h5 class="card-title">${item.title}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">${item.price}</h6>
-        <p class="card-text">${item.description}</p>
-        <p class="card-text"><small class="text-muted">Category: ${item.category}</small></p>
-      </div>
-    </div>
-  </div>`
-});
-itemsContainerElement.innerHTML =innerHTML;
-  
+// const menu = [
+//     // ... same menu data ...
+// ];
+
 document.addEventListener('DOMContentLoaded', () => {
-  const navbarToggler = document.querySelector('.navbar-toggler');
-  const navbarCollapse = document.querySelector('.navbar-collapse');
+    const itemsContainerElement = document.querySelector('.menu-items');
+    const noResultsElement = document.getElementById('no-results');
+    let activeFilter = 'all';
+    let searchText = '';
 
-  navbarToggler.addEventListener('click', () => {
-    navbarCollapse.classList.toggle('show');
-  });
+    // Render menu items
+    function renderMenuItems() {
+        let innerHTML = '';
+        let visibleItems = 0;
 
-  // Initial display
-  filterItems('all');
-});
-  
-// Filtering function
-const filterItems = (filter) => {
-  const items = document.querySelectorAll('.menu-item');
-  items.forEach(item => {
-    const category = item.getAttribute('data-category');
-    if (filter === 'all' || category === filter) {
-      item.classList.remove('hidden');
-    } else {
-      item.classList.add('hidden');
+        menu.forEach(item => {
+            const matchesCategory = activeFilter === 'all' || item.category === activeFilter;
+            const matchesSearch = item.title.toLowerCase().includes(searchText) || 
+                                item.description.toLowerCase().includes(searchText);
+
+            if (matchesCategory && matchesSearch) {
+                innerHTML += `
+                <div class="col-lg-4 col-md-6 my-3 menu-item" data-category="${item.category}">
+                    <div class="card h-100 hover-effect">
+                        <img src="${item.img}" class="card-img-top" alt="${item.title}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">${item.title}</h5>
+                                <span class="text-primary fw-bold">${item.price}</span>
+                            </div>
+                            <p class="card-text">${item.description}</p>
+                            <span class="badge bg-secondary">${item.category}</span>
+                        </div>
+                    </div>
+                </div>`;
+                visibleItems++;
+            }
+        });
+
+        itemsContainerElement.innerHTML = innerHTML;
+        noResultsElement.classList.toggle('d-none', visibleItems > 0);
     }
-  });
-};
 
-// Add event listeners to the nav links
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelector('.nav-link.active').classList.remove('active');
-    e.target.classList.add('active');
-    const filter = e.target.getAttribute('data-filter');
-    filterItems(filter);
-  });
-});
+    // Initialize filters and render
+    function init() {
+        renderMenuItems();
+        
+        // Navbar toggle for mobile
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        navbarToggler.addEventListener('click', () => {
+            navbarCollapse.classList.toggle('show');
+        });
 
-// Search functionality
-const searchInput = document.getElementById('search-input');
-searchInput.addEventListener('input', (e) => {
-  const searchValue = e.target.value.trim().toLowerCase();
-  const items = document.querySelectorAll('.menu-item');
-  items.forEach(item => {
-    const title = item.querySelector('.card-title').textContent.toLowerCase();
-    if (title.includes(searchValue)) {
-      item.classList.remove('hidden');
-    } else {
-      item.classList.add('hidden');
+        // Filter click event
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelector('.nav-link.active').classList.remove('active');
+                e.target.classList.add('active');
+                activeFilter = e.target.getAttribute('data-filter');
+                renderMenuItems();
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            searchText = e.target.value.trim().toLowerCase();
+            renderMenuItems();
+        });
     }
-  });
+
+    init();
 });
